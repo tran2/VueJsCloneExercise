@@ -1,47 +1,28 @@
-console.log('starting...');
+import Vue from './vue';
 
-class Vue {
-  constructor(props) {
-    this.$data = props.data;
-    if (props.data) {
-      const { data } = props;
-      console.log('props.data', props.data);
-      Object.keys(data).forEach(key => {
-        let value = data[key];
-        Object.defineProperty(this.$data, key, {
-          get() {
-            return value;
-          },
-          set(val) {
-            const old = value;
-            console.log('SET', key);
-            value = val;
-            if (props.watch[key]) {
-              props.watch[key](val, old);
-            }
-          },
-        });
-      });
-    }
-  }
-}
+console.log('starting...');
 
 const v = new Vue({
   el: '#app',
   data: {
-    message: 'Hello Vue.js!',
+    message: {
+      a: 'baaaa',
+    },
     another: 'another',
   },
   watch: {
-    message(newVal, old) {
-      console.log('message changed!!', newVal, old);
+    another(newVal, old) {
+      console.log('another changed!!', newVal, old);
+    },
+    'message.a': function(newVal, old) {
+      console.log('message.a changed!!', newVal, old);
     },
   },
 });
-console.log('GET message', v.$data.message);
-v.$data.message = 'test';
-console.log('GET message 2nd time', v.$data.message);
 
-console.log('GET another', v.$data.another);
-v.$data.another = 'swag';
-console.log('GET another 2nd time', v.$data.another);
+v.$data.message.a = 'test';
+v.$data.another = 'test2';
+
+// console.log('GET another', v.$data.another);
+// v.$data.another = 'swag';
+// console.log('GET another 2nd time', v.$data.another);

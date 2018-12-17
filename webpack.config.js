@@ -1,14 +1,15 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 const FILENAME = 'bundle';
 
 const config = {
-  context: __dirname,
-  entry: path.join(__dirname, 'src/index.js'),
+  mode: isProduction ? 'production' : 'development',
+  entry: './src/index.js',
   devtool: 'cheap-eval-source-map',
   output: {
-    path: path.join(__dirname, 'build/'),
+    path: path.resolve(__dirname, 'public'),
     filename: `${FILENAME}.js`,
     /*  Output - How to set webpack to expose your library to the browser
         reference - https://webpack.js.org/configuration/output/
@@ -45,6 +46,8 @@ const config = {
   },
   devServer: {
     publicPath: '/public/',
+    contentBase: path.join(__dirname, 'public'),
+    index: 'index.html',
   },
   resolve: {
     extensions: ['.js', '.json'],
@@ -66,8 +69,21 @@ const config = {
         test: /\.js$/,
         loader: 'babel-loader',
       },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+          },
+        ],
+      },
     ],
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      filename: './index.html',
+    }),
+  ],
 };
 
 if (isProduction === true) {
